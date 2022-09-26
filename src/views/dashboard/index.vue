@@ -1,20 +1,17 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
-    <svg-icon icon-class="eye-open" />
+    <div class="dashboard-text">name:{{ name }}</div>
+    <svg-icon icon-class="eye-open"/>
   </div>
 </template>
-
 <script>
 import { mapGetters } from 'vuex'
-
 export default {
   name: 'Dashboard',
   computed: {
-    ...mapGetters([
-      'name'
-    ])
-  }
+    ...mapGetters(['name'])
+  },
+
 }
 </script>
 

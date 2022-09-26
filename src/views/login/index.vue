@@ -16,7 +16,7 @@
         </span>
         <el-input ref="pwd" v-model="loginForm.password" :type="passwordType" placeholder="请输入密码" />
         <span class="svg-container" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open' " />
+          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
       <el-button class="loginBtn" :loading="loading" @click="loding">登录</el-button>

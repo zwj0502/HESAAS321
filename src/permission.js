@@ -2,7 +2,7 @@ import router from "@/router";
 import store from '@/store'
 const wheteelist = ['/login', '/404']
 // 任何一个路由跳转 都会进入这个全局前置守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async(to, from, next) => {
      // ...
   // to 将要进入的目标
   // from 当前导航正要离开的路由
@@ -12,6 +12,9 @@ router.beforeEach((to, from, next) => {
   // next('/') 或者 next({ path: '/' })  跳转到一个不同的地址   
   //  当前的导航被中断，然后进行一个新的导航
     if (store.getters.token) {
+        if (!store.getters.userId) { 
+            await store.dispatch('user/getUserinfo')
+        }
         if (to.path === '/login') {
             next('/')
         } else {
