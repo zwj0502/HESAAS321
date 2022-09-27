@@ -8,7 +8,7 @@ export const getUserinfo = (data) => {
   })
 }
 
-export const getUserDetailById=(id)=> {
+export const getUserDetailById = (id) => {
   return request({
     url: `/sys/user/${id}`
   })

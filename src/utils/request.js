@@ -2,13 +2,25 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '@/store'
+import router from '@/router'
+const TimeOut = 3600
+function IsCheckTimeOut() {
+  const currentTime = Date.now()
+  const timeStamp = (currentTime - store.getters.herateTime) / 1000
+  return timeStamp > TimeOut
+}
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
   timeout: 5000
 })
-service.interceptors.request.use(config => { 
-   // 在这个位置需要统一的去注入token
-   if (store.getters.token) {
+service.interceptors.request.use(config => {
+  // 在这个位置需要统一的去注入token
+  if (store.getters.token) {
+    if (IsCheckTimeOut()) {
+      store.dispatch('user/logout')
+      router.push('/login')
+      return Promise.reject(new Error('token 超时'))
+    }
     // 如果token存在 注入token
     config.headers['Authorization'] = `Bearer ${store.getters.token}`
   }
@@ -29,7 +41,13 @@ service.interceptors.response.use(response => {
     return Promise.reject(new Error(message))
   }
 }, error => {
-  Message.error(error.message) // 提示错误信息
+  if (error.response.status === 401) {
+    store.dispatch('user/logout')
+    router.push('/login')
+    Message.error('token 超时')
+  } else {
+    Message.error(error.message) // 提示错误信息
+  }
   return Promise.reject(error) // 返回执行错误 让当前的执行链跳出成功 直接进入 catch
 })
 export default service
