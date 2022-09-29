@@ -2,7 +2,7 @@
   <div>
     <template>
       <el-dialog
-        title="新增角色"
+        :title="title"
         width="50%"
         :visible.sync="visible"
         :before-close="handleClsoe"
@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { addRoleList } from '@/api/setting'
+import { addRoleList, updateRole } from '@/api/setting'
 export default {
   props: {
     visible: {
@@ -53,21 +53,28 @@ export default {
 
     }
   },
+  computed: {
+    title() {
+      return this.formData.id ? '编辑角色' : '新增角色'
+    }
+  },
   methods: {
     handleClsoe() {
       this.$emit('update:visible', false)
       this.$refs.roleDialogForm.resetFields()
-      this.formData.description = ''
+      this.formData = {
+        name: '',
+        description: ''
+      }
     },
     async addRoleBtn() {
       try {
-        await this.$refs.roleDialogForm.validate()
         this.loading = true
-        await addRoleList(this.formData)
-        this.$refs.roleDialogForm.resetFields()
-        this.$message.success('新增成功 ')
-        this.handleClsoe()
+        await this.$refs.roleDialogForm.validate()
+        this.formData.id ? await updateRole(this.formData) : await addRoleList(this.formData)
         this.$emit('createAdd')
+        this.$message.success(this.formData.id ? '编辑成功' : '新增成功 ')
+        this.handleClsoe()
       } catch (error) {
         this.$Message.error('error')
       } finally {
