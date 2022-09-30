@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">name:{{ name }}</div>
-    <svg-icon icon-class="eye-open"/>
+    <svg-icon icon-class="eye-open" />
   </div>
 </template>
 <script>
@@ -10,7 +10,7 @@ export default {
   name: 'Dashboard',
   computed: {
     ...mapGetters(['name'])
-  },
+  }
 
 }
 </script>
