@@ -14,8 +14,8 @@
             <!-- 下拉菜单 -->
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="add">添加子部门</el-dropdown-item>
-              <el-dropdown-item v-if="isRot" command="edit">编辑子部门</el-dropdown-item>
-              <el-dropdown-item v-if="isRot" command="del">删除子部门</el-dropdown-item>
+              <el-dropdown-item v-if="isRot" command="edit">编辑部门</el-dropdown-item>
+              <el-dropdown-item v-if="isRot" command="del">删除部门</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </el-col>
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import { delDepartments } from '@/api/departmennts'
 export default {
 
   props: {
@@ -49,8 +50,22 @@ export default {
         this.$emit('addDepts', this.treeNode)
       } else if (type === 'edit') {
         // 编辑
+        this.$emit('eitDepts', this.treeNode)
       } else {
         // 删除
+        this.$confirm('此操作将永久删除该部门, 是否继续?', '提示', {
+          type: 'warning'
+        }).then(async res => {
+          return delDepartments(this.treeNode.id)
+          // this.$emit('deleteBtn', this.treeNode)
+          // this.$message({
+          //   type: 'success',
+          //   message: '删除成功!'
+          // })
+        }).then(res => {
+          this.$message.success('删除成功')
+          this.$emit('deleteBtn')
+        })
       }
     }
   }

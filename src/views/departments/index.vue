@@ -1,13 +1,12 @@
 <template>
-  <div class="app-container">
+  <div v-loading="loading" class="app-container">
     <el-card>
       <treetools :tree-node="company" :is-rot="false" @addDepts="addDepts" />
     </el-card>
     <el-tree :data="departs" :props="defaultProps" :default-expand-all="true">
-      <treetools slot-scope="{ data }" :tree-node="data" @addDepts="addDepts" />
-
+      <treetools slot-scope="{ data }" :tree-node="data" @addDepts="addDepts" @eitDepts="eitDepts" @deleteBtn="getDepartments" />
     </el-tree>
-    <addDepart :show-dialog.sync="showDialog" :tree-node="treeNode" @submit="getDepartments" />
+    <addDepart ref="addDepart" :show-dialog.sync="showDialog" :tree-node="treeNode" @submit="getDepartments" />
   </div>
 </template>
 <script>
@@ -29,7 +28,8 @@ export default {
       departs: [],
       company: {},
       showDialog: false,
-      treeNode: {}
+      treeNode: {},
+      loading: false
     }
   },
   mounted() {
@@ -40,14 +40,24 @@ export default {
       console.log(data)
     },
     async getDepartments() {
-      const { depts, companyName, companyManage } = await getDepartments()
-      this.departs = tranListDepar(depts, '')
-      this.company = { name: companyName, manager: companyManage, id: '' }
+      try {
+        this.loading = true
+        const { depts, companyName, companyManage } = await getDepartments()
+        this.departs = tranListDepar(depts, '')
+        this.company = { name: companyName, manager: companyManage, id: '' }
+      } finally {
+        this.loading = false
+      }
     },
     addDepts(node) {
       console.log(123)
       this.showDialog = true
       this.treeNode = node
+    },
+    eitDepts(node) {
+      this.treeNode = node
+      this.showDialog = true
+      this.$refs.addDepart.formData = { ...node }
     }
   }
 }
