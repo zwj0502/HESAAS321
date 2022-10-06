@@ -7,7 +7,7 @@
       <treetools slot-scope="{ data }" :tree-node="data" @addDepts="addDepts" />
 
     </el-tree>
-    <addDepart :show-dialog.sync="showDialog" :tree-node="treeNode" />
+    <addDepart :show-dialog.sync="showDialog" :tree-node="treeNode" @submit="getDepartments" />
   </div>
 </template>
 <script>
@@ -50,7 +50,6 @@ export default {
       this.treeNode = node
     }
   }
-
 }
 </script>
 
