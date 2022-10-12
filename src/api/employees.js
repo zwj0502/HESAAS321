@@ -32,3 +32,37 @@ export function updateDepartments(data) {
     data
   })
 }
+
+/**
+ * 获取员工的综合列表数据
+ * ***/
+export function getEmployeeList(params) {
+  return request({
+    url: '/sys/user',
+    params
+  })
+}
+
+/** **
+ *  新增员工的接口
+ * **/
+export function addEmployee(data) {
+  return request({
+    method: 'post',
+    url: '/sys/user',
+    data
+  })
+}
+export function delEmployee(id) {
+  return request({
+    url: `/sys/user/${id}`,
+    method: 'delete'
+  })
+}
+export function importEmployee(data) {
+  return request({
+    url: '/sys/user/batch',
+    method: 'post',
+    data
+  })
+}
