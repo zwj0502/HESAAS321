@@ -1,18 +1,17 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
-    <svg-icon icon-class="eye-open" />
-    <UploadExcel :before-uploadd="beforeUploadd" :on-success="handleSuccess" />
+    <UploadImg @onPageimg="onPageimg" />
+    <UploadImg @onPageimg="onPageimg1" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import UploadExcel from '@/components/UploadExcel/index.vue'
+import UploadImg from '@/components/UploadImg/index.vue'
 export default {
   name: 'Dashboard',
   components: {
-    UploadExcel
+    UploadImg
   },
   computed: {
     ...mapGetters([
@@ -30,6 +29,12 @@ export default {
         return false
       }
       return true
+    },
+    onPageimg(node) {
+      console.log('123', node)
+    },
+    onPageimg1(node) {
+      console.log('456', node)
     }
   }
   // created() {

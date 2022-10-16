@@ -16,6 +16,11 @@
     <el-card>
       <el-table v-loading="loading" border :data="list">
         <el-table-column label="序号" sortable="" width="80" type="index" />
+        <el-table-column label="头像">
+          <template slot-scope="{row}">
+            <img style="width:100px;height: 100px;border-radius: 50%;" :src="row.staffPhoto" alt="" @click="dialogVisiblePhotoBtn(row.staffPhoto)">
+          </template>
+        </el-table-column>
         <el-table-column label="姓名" prop="username" />
         <el-table-column label="工号" prop="workNumber" />
         <el-table-column label="聘用形式" prop="formOfEmployment" :formatter="formatEmployment" />
@@ -50,6 +55,13 @@
         />
       </el-row>
     </el-card>
+    <el-dialog
+      title="图片预览"
+      :visible.sync="dialogVisiblePhoto"
+      width="30%"
+    >
+      <canvas ref="canvas" />
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -57,6 +69,7 @@ import EmployeeEnum from '@/api/constant/employees'
 import PageTools from '@/components/PageTools'
 import { getEmployeeList, delEmployee } from '@/api/employees'
 import addemployee from './components/add-employee.vue'
+import QRCode from 'qrcode'
 export default {
   name: 'HrsaasIndex',
   components: {
@@ -75,7 +88,8 @@ export default {
       total: 0,
       loading: false,
       hireType: EmployeeEnum.employees,
-      dialogVisible: false
+      dialogVisible: false,
+      dialogVisiblePhoto: false
     }
   },
 
@@ -151,9 +165,22 @@ export default {
     },
     Detail(id) {
       this.$router.push('/employees/Detail/' + id)
+    },
+    dialogVisiblePhotoBtn(staffPhoto) {
+      if (!staffPhoto) return this.$message.error('暂无头像')
+      this.dialogVisiblePhoto = true
+      this.$nextTick(() => {
+        QRCode.toCanvas(this.$refs.canvas, staffPhoto, function(error) {
+          if (error) {
+            console.error(error)
+            console.log('success!')
+          }
+        })
+      })
     }
   }
 }
+
 </script>
 
 <style lang="scss" scoped>

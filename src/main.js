@@ -19,6 +19,8 @@ import * as directives from '@/directives'
 Object.keys(directives).forEach(ele => {
   Vue.directive(ele, directives[ele])
 })
+import Print from 'vue-print-nb'
+Vue.use(Print)
 import * as filters from '@/filters' // 引入工具类
 // 注册全局的过滤器
 Object.keys(filters).forEach(key => {
