@@ -8,7 +8,7 @@ export const getUserinfo = (data) => {
   })
 }
 /**
- *添加员工
+ *
  * @param {*} id
  * @returns
  */
@@ -30,3 +30,17 @@ export const updateUserDetailById = (data) => {
     data
   })
 }
+
+/**
+ *给员工分配角色
+ * @param {} data
+ * @returns
+ */
+export const setemployeesRoles = (data) => {
+  return request({
+    url: '/sys/user/assignRoles',
+    method: 'put',
+    data
+  })
+}
+

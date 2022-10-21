@@ -6,7 +6,7 @@
       </template>
       <template #after>
         <el-button size="small" type="warning" @click="$router.push('/import')">导入</el-button>
-        <el-button size="small" type="danger" @click="ExportExcel">导出</el-button>
+        <el-button :disabled="disabledRole('roles.add')" size="small" type="danger" @click="ExportExcel">导出</el-button>
         <el-button size="small" type="primary" @click="addBtn">新增员工</el-button>
         <addemployee :dialog-visible.sync="dialogVisible" />
 
@@ -32,11 +32,11 @@
         <el-table-column label="账户状态" prop="enableState" />
         <el-table-column label="操作" fixed="right" width="280">
           <template slot-scope="{row}">
-            <el-button type="text" size="small" @click="Detail(row.id)">查看</el-button>
+            <el-button  type="text" size="small" @click="Detail(row.id)">查看</el-button>
             <el-button type="text" size="small">转正</el-button>
             <el-button type="text" size="small">调岗</el-button>
             <el-button type="text" size="small">离职</el-button>
-            <el-button type="text" size="small">角色</el-button>
+            <el-button type="text" size="small" @click="roledialogVisibleSet(row)">角色</el-button>
             <el-button type="text" size="small" @click="deleteBtn(row.id)">删除</el-button>
           </template>
         </el-table-column>
@@ -62,20 +62,26 @@
     >
       <canvas ref="canvas" />
     </el-dialog>
+    <assignRole ref="assignRole" :dialog-visible-set.sync="dialogVisibleSet" />
   </div>
 </template>
 <script>
+import disabledRoleBtn from '@/misins/disabledRoleBtn'
+
 import EmployeeEnum from '@/api/constant/employees'
 import PageTools from '@/components/PageTools'
 import { getEmployeeList, delEmployee } from '@/api/employees'
 import addemployee from './components/add-employee.vue'
 import QRCode from 'qrcode'
+import assignRole from './components/assignRole.vue'
 export default {
   name: 'HrsaasIndex',
   components: {
     PageTools,
-    addemployee
+    addemployee,
+    assignRole
   },
+  mixins: [disabledRoleBtn],
   data() {
     return {
       type: 'info',
@@ -89,7 +95,8 @@ export default {
       loading: false,
       hireType: EmployeeEnum.employees,
       dialogVisible: false,
-      dialogVisiblePhoto: false
+      dialogVisiblePhoto: false,
+      dialogVisibleSet: false
     }
   },
 
@@ -153,7 +160,7 @@ export default {
           return item[headera[h]]
         })
       })
-      console.log(data)
+      // console.log(data)
       const { export_json_to_excel } = await import('@/wendor/Export2Excel.js')
       export_json_to_excel({
         header, // 表头 必填
@@ -177,6 +184,10 @@ export default {
           }
         })
       })
+    },
+    async roledialogVisibleSet({ id }) {
+      await this.$refs.assignRole.getemployessRole(id)
+      this.dialogVisibleSet = true
     }
   }
 }

@@ -1,5 +1,6 @@
 import { login } from '@/api/login'
 import { getUserinfo, getUserDetailById } from '@/api/user'
+import { resetRouter } from '@/router'
 export default {
   namespaced: true,
   state: {
@@ -34,15 +35,20 @@ export default {
     async getUserinfo({ commit }) {
       // console.log(1);
       const res = await getUserinfo()
+      // 模拟后端返回的按钮权限数据
+      const points = ['roles-add', 'roles-edit']
+      // 将后端返回的全线数据存到自己的权限数组里面
+      res.roles.points = points
       const res1 = await getUserDetailById(res.userId)
       const rules = { ...res, ...res1 }
       console.log(res)
       commit('SET_USER_INFO', rules)
-      return JSON.parse(JSON.stringify(res))
+      return res.roles
     },
     logout({ commit }) {
       commit('DEL_USER_INFO')
       commit('DEL_USER_TOKEN')
+      resetRouter()
     }
   }
 

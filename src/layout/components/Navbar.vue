@@ -6,10 +6,15 @@
     <div class="app-breadcrumb">
       江苏传智播客教育科技股份有限公司
       <span class="breadBtn">体验版</span>
+
     </div>
+
     <div class="right-menu">
+      <toolsPage />
+
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
+          <f11 style="margin-right:20px" />
           <img v-imgerror="defaultImg" :src="staffPhoto" class="user-avatar">
           <span>{{ name }}</span>
           <i class="el-icon-caret-bottom" />
@@ -34,10 +39,12 @@ import { mapGetters } from 'vuex'
 // import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import defaultImg from '@/assets/common/head.jpg'
+import f11 from './f11'
+import toolsPage from '@/components/toolsPage'
 export default {
   components: {
     // Breadcrumb,
-    Hamburger
+    Hamburger, f11, toolsPage
   },
   data() {
     return {

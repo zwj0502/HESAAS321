@@ -1,5 +1,6 @@
 import router from '@/router'
 import store from '@/store'
+import { asyncRoutes } from '@/router'
 const wheteelist = ['/login', '/404']
 // 任何一个路由跳转 都会进入这个全局前置守卫
 router.beforeEach(async(to, from, next) => {
@@ -13,7 +14,17 @@ router.beforeEach(async(to, from, next) => {
   //  当前的导航被中断，然后进行一个新的导航
   if (store.getters.token) {
     if (!store.getters.userId) {
-      await store.dispatch('user/getUserinfo')
+      const roles = await store.dispatch('user/getUserinfo')
+      console.log(roles)
+      console.log(asyncRoutes)
+      const filterasyncRoutes = asyncRoutes.filter(item => {
+        return roles.menus.includes(item.meat.id)
+      })
+      console.log(filterasyncRoutes)
+
+      router.addRoutes([...filterasyncRoutes, { path: '*', redirect: '/404', hidden: true }])
+      store.commit('permission/setRoutes', filterasyncRoutes)
+      next(to.path)
     }
     if (to.path === '/login') {
       next('/')

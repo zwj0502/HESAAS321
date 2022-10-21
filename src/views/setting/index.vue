@@ -5,7 +5,7 @@
         <el-tab-pane label="角色管理" name="first">
           <el-row>
             <el-col :span="24"><div class="grid-content bg-purple-dark" />
-              <el-button type="primary" style="margin-left:10px" size="small" icon="el-icon-plus" @click="visible = true">新建角色</el-button>
+              <el-button v-isHot="'roles-add'" type="primary" style="margin-left:10px" size="small" icon="el-icon-plus" @click="visible = true">新建角色</el-button>
             </el-col>
           </el-row>
           <el-table
@@ -29,9 +29,9 @@
             />
             <el-table-column label="操作">
               <template slot-scope="{row}">
-                <el-button size="small" type="success">分配权限</el-button>
-                <el-button size="small" type="primary" @click="editBtn(row)">编辑</el-button>
-                <el-button size="small" type="danger" @click="delRow(row.id)">删除</el-button>
+                <el-button size="small" type="success" @click="setpermissions(row.id)">分配权限</el-button>
+                <el-button v-isHot="'roles-emit'" size="small" type="primary" @click="editBtn(row)">编辑</el-button>
+                <el-button v-isHot="'roles-move'" size="small" type="danger" @click="delRow(row.id)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -82,18 +82,21 @@
       </el-tabs>
     </el-card>
     <addRole ref="addRole" :visible.sync="visible" @createAdd="getRoleList" />
-
+    <addSetpermissions ref="addSetpermissions" :dialog-visible.sync="dialogVisible" />
   </div>
 </template>
 
 <script>
 import addRole from './components/addRole.vue'
 import { getRoleList, deleteRole, getCompanyInfo } from '@/api/setting'
+import addSetpermissions from './components/addSetpermissions.vue'
+import disabledRoleBtn from '@/misins/disabledRoleBtn'
 export default {
   name: 'HrsaasIndex',
   components: {
-    addRole
+    addRole, addSetpermissions
   },
+  mixins: [disabledRoleBtn],
   data() {
     return {
       activeName: 'first',
@@ -105,15 +108,22 @@ export default {
       rowsList: [],
       loading: false,
       visible: false,
-      CompanyInfo: []
+      CompanyInfo: [],
+      dialogVisible: false
     }
   },
+  // computed: {
+  //   disabledRole() {
+  //     return function(disabledRoleId) {
+  //       return !this.$store.state.user.userinfo.roles.points.includes(disabledRoleId)
+  //     }
+  //   }
+  // },
 
   mounted() {
     this.getRoleList()
     this.getCompany()
   },
-
   methods: {
     async getRoleList() {
       try {
@@ -159,7 +169,15 @@ export default {
       const res = await getCompanyInfo(this.$store.getters.companyId)
       console.log(res)
       this.CompanyInfo = res
+    },
+    setpermissions(id) {
+      this.$refs.addSetpermissions.getpermissionRleid(id)
+      this.dialogVisible = true
     }
+    // disabledRole(disabledId) {
+    //   // console.log(this.$store.state.user.userinfo)
+    //   return !this.$store.state.user.userinfo.roles.points.includes(disabledId)
+    // }
   }
 }
 </script>
